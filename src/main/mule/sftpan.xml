@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a69130f9-c816-4e42-aaf0-bb5798b39146" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="eefa4105-aa4b-40f8-be02-bb5287cc0a3e" file="common.properties" />
+	<flow name="sftpanFlow" doc:id="8f7b5605-5caa-4c43-a5a0-af5ea2d906c6" >
+		<http:listener doc:name="Listener" doc:id="08233ccb-61a7-4bb6-af97-2549c67a48f5" config-ref="HTTP_Listener_config" path="luc"/>
+		<ee:transform doc:name="Transform Message" doc:id="4cdf1c6d-f328-4ba5-8fd8-10257d7fa33b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+upper(payload.FirstName) default "" ++ " " ++ upper(payload.LastName) default ""]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0008389f-727b-4ee8-9697-6c7cb7948268" message="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2c539c1a-5c0d-4625-99f7-d08056d61133" message="file is successfuly processed"/>
+	</flow>
+</mule>
